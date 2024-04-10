@@ -1,0 +1,20 @@
+name: reiverr
+
+services:
+  reiverr:
+    image: ghcr.io/aleksilassila/reiverr:latest
+    container_name: reiverr
+    ports:
+      - 9494:9494
+    volumes:
+      - reiverr-config:/config
+    restart: unless-stopped
+    networks:
+      - media
+
+networks:
+  media:
+    external: true
+volumes:
+  reiverr-config:
+    external: true

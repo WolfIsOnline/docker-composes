@@ -1,0 +1,21 @@
+services:
+    jellyseerr:
+       image: fallenbagel/jellyseerr:latest
+       container_name: jellyseerr
+       environment:
+            - LOG_LEVEL=debug
+            - TZ=New_York/America
+       ports:
+            - 5055:5055
+       volumes:
+        - type: bind
+          source: /var/lib/docker/volumes/docker-nfs/jellyseer/
+          target: /app/config
+
+       networks:
+        - media
+       restart: unless-stopped
+
+networks:
+  media:
+    external: true

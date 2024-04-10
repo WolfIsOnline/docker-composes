@@ -1,0 +1,26 @@
+services:
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York 
+    ports:
+      - 8096:8096
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: /var/lib/docker/volumes/docker-nfs/jellyfin/
+        target: /config
+      - type: bind
+        source: /var/lib/docker/volumes/contents-nfs
+        target: /content
+        read_only: true
+
+    networks:
+      - media
+
+networks:
+  media:
+    external: true

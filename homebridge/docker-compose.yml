@@ -1,0 +1,15 @@
+services:
+  homebridge:
+    container_name: homebridge
+    image: homebridge/homebridge:latest
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+    - type: bind
+      source: /var/lib/docker/volumes/docker-nfs/homebridge/
+      target: /homebridge
+    logging:
+      driver: json-file
+      options:
+        max-size: "10mb"
+        max-file: "1"

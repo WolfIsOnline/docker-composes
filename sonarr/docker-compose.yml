@@ -1,0 +1,28 @@
+services:
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=New_York/America
+
+    volumes:
+      - sonarr-local-config:/config
+      - type: bind
+        source: /var/lib/docker/volumes/contents-nfs/
+        target: /content
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+    networks:
+      - media
+
+networks:
+  media:
+    external: true
+
+volumes:
+  sonarr-local-config:
+    external: true

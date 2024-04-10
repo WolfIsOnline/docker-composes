@@ -1,0 +1,28 @@
+services:
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=New_York/America
+
+    volumes:
+      - radarr-local:/config
+      - type: bind
+        source: /var/lib/docker/volumes/contents-nfs/
+        target: /content
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+    networks:
+      - media
+
+networks:
+  media:
+    external: true
+
+volumes:
+  radarr-local:
+    external: true

@@ -1,0 +1,30 @@
+services:
+  syncthing:
+    image: lscr.io/linuxserver/syncthing:latest
+    container_name: syncthing
+    hostname: box
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=New_York/America
+    ports:
+      - 8384:8384
+      - 22000:22000/tcp
+      - 22000:22000/udp
+      - 21027:21027/udp
+    restart: unless-stopped
+    volumes:
+      - syncthing-config:/config
+      - type: bind
+        source: /var/lib/docker/volumes/contents-nfs/
+        target: /nas
+    networks:
+      - media
+
+networks:
+  media:
+    external: true
+
+volumes:
+  syncthing-config:
+    external: true
