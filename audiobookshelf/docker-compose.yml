@@ -1,0 +1,22 @@
+services:
+  audiobookshelf:
+    container_name: audiobookshelf
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    ports:
+      - 13378:80
+    volumes:
+    - type: bind
+      source: /var/lib/docker/volumes/contents-nfs/audiobooks/
+      target: /audiobooks
+    - type: bind
+      source: /var/lib/docker/volumes/docker-nfs/audiobookshelf/config/
+      target: /config
+    - type: bind
+      source: /var/lib/docker/volumes/docker-nfs/audiobookshelf/metadata/
+      target: /metadata
+    networks:
+    - media
+
+networks:
+  media:
+    external: true
