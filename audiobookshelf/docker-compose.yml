@@ -16,6 +16,7 @@ services:
       target: /metadata
     networks:
     - media
+    restart: unless-stopped
 
 networks:
   media:
