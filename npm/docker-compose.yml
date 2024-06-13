@@ -12,7 +12,8 @@ services:
       - /data/compose/7/letsencrypt:/etc/letsencrypt
 
     networks:
-      - media
+      media:
+        ipv4_address: 172.22.0.11
 
 networks:
   media:
