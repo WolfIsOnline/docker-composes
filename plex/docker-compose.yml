@@ -1,0 +1,22 @@
+services:
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: host
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=New_York/America
+      - VERSION=docker
+      - PLEX_CLAIM=claim-AQeJG3vz9LQZ8198NGAs
+    volumes:
+      - plex-local-config:/config
+      - type: bind
+        source: /var/lib/docker/volumes/contents-nfs/
+        target: /content
+        read_only: true
+    restart: unless-stopped
+
+volumes:
+  plex-local-config:
+    external: true
