@@ -1,0 +1,33 @@
+services:
+  jellystat-db:
+    image: postgres:15.2
+    container_name: jellystat-postgres
+    environment:
+      POSTGRES_DB: 'jfstat'
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - jellystat-config-local:/config
+  jellystat:
+    container_name: jellystat
+    image: cyfershepard/jellystat:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_IP: jellystat-postgres
+      POSTGRES_PORT: 5432
+      JWT_SECRET: 'my-secret-jwt-key'
+    ports:
+      - "3000:3000" #Server Port
+    depends_on:
+      - jellystat-db
+    restart: unless-stopped
+    networks:
+      - media
+networks:
+  media:
+    external: true
+
+volumes:
+  jellystat-config-local:
+    external: true
