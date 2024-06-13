@@ -1,0 +1,67 @@
+services:
+  tubearchivist:
+    container_name: tubearchivist
+    image: bbilly1/tubearchivist
+    ports:
+      - 8003:8000/tcp
+    volumes:
+      - type: bind
+        source: /var/lib/docker/volumes/youtube-nfs/
+        target: /youtube
+      - /home/wolf/tubearchivist/cache:/cache
+    environment:
+      - ES_URL=http://archivist-es:9200
+      - REDIS_HOST=archivist-redis
+      - HOST_UID=1000 #CHANGE_TO_YOUR_UID
+      - HOST_GID=1000 #CHANGE_TO_YOUR_GID
+      - TA_HOST=internal-youtube.projectpercy.com #Change to your NAS IP
+      - TA_USERNAME=wolf #Username for login
+      - TA_PASSWORD=Firetheguns1 #password for login
+      - ELASTIC_PASSWORD=Firetheguns1 # set password for Elasticsearch
+      - TZ=America/New_York #CHANGE_TO_YOUR_TZ
+    depends_on:
+      - archivist-es
+      - archivist-redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://192.168.0.59:8000/health"]
+      interval: 2m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    restart: always
+      
+  archivist-redis:
+    image: redis/redis-stack-server
+    container_name: archivist-redis
+    ports:
+      - 6379:6379/tcp
+    volumes:
+      - /home/wolf/tubearchivist/redis:/data
+    depends_on:
+      - archivist-es
+    security_opt:
+      - no-new-privileges:true
+    restart: always
+
+  archivist-es:
+    image: bbilly1/tubearchivist-es
+    container_name: archivist-es
+    environment:
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=true
+      - discovery.type=single-node
+      - path.repo=/usr/share/elasticsearch/data/snapshot
+      - ELASTIC_PASSWORD=Firetheguns1 #same password from above
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - /home/wolf/tubearchivist/es:/usr/share/elasticsearch/data
+    ports:
+     - 9200:9200/tcp
+    security_opt:
+      - no-new-privileges:true
+    restart: always
